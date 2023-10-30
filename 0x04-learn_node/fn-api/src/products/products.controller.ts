@@ -6,10 +6,10 @@ import { Product } from "./products.model";
 export class ProductsController{
     constructor(private readonly productsService: ProductsService){}
     @Post()
-    addProduct(
+    async addProduct(
         @Body() completeBody: {title: string, description: string, price: number} 
-    ): Product {
-        const product = this.productsService.insertProduct(
+    ): Promise<Product> {
+        const product = await this.productsService.insertProduct(
             completeBody.title, completeBody.description, completeBody.price
         )
 
@@ -17,27 +17,27 @@ export class ProductsController{
     }
 
     @Get()
-    getAllProducts(): Product[]{
-        const products = this.productsService.getAllProducts()
+    async getAllProducts(): Promise<Product[]>{
+        const products = await this.productsService.getAllProducts()
 
         return products
     }
 
     @Get(":id")
-    getOneProduct(
+    async getOneProduct(
         @Param('id') id: string
-    ): Product{
-        const product = this.productsService.getOneProduct(id)
+    ): Promise<Product>{
+        const product = await this.productsService.getOneProduct(id)
 
         return product
     }
     
     @Patch(":id")
-    updateProduct(
+    async updateProduct(
         @Param('id') id: string, 
         @Body() completeBody: {title: string, description: string, price: number}
-    ): Product{
-        const updatedProduct = this.productsService.updateProduct(
+    ): Promise<Product>{
+        const updatedProduct = await this.productsService.updateProduct(
             id, completeBody.title, completeBody.description, completeBody.price
         )
 
@@ -45,10 +45,10 @@ export class ProductsController{
     }
 
     @Delete(":id")
-    removeProduct(
+    async removeProduct(
         @Param('id') id: string
-    ): Product{
-        const removedProduct = this.productsService.removeProduct(id)
+    ){
+        const removedProduct = await this.productsService.removeProduct(id)
 
         return removedProduct
     }
