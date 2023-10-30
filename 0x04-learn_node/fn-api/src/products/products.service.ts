@@ -32,7 +32,7 @@ export class ProductsService{
             title: string,
             description: string,
             price: number
-        ){
+        ): Product{
         const [product, index] = this.findProduct(id)
         const updatedProduct = {...product}
         if(title){
@@ -44,8 +44,16 @@ export class ProductsService{
         if(price){
             updatedProduct.price = price
         }
+        
+        return updatedProduct
+    }
 
-        //
+    removeProduct(id: string): Product{
+        const [deletedProduct, productIndex] = this.findProduct(id)
+        // this.products.filter(prod => prod.id !== id) //works too
+        this.products.splice(productIndex, 1)
+
+        return deletedProduct
     }
 
     private findProduct(id: string): [Product, number]{
@@ -54,6 +62,7 @@ export class ProductsService{
         if(!product){
             throw new NotFoundException("Cannot find product")
         }
+
         return [product, productIndex]
     }
 }
