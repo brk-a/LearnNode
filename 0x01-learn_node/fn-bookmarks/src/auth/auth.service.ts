@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable} from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException} from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto } from "./dto";
 import * as argon from "argon2"
@@ -32,7 +32,32 @@ export class AuthService{
         }
     }
 
-    signup(){
-        return "Signed up"
+    async signup(dto: AuthDto){
+        const email = dto.email
+        const password = dto.password
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    email,
+                },
+            })
+            if(!user){
+                throw new NotFoundException("invalid email or password")
+            }
+            const pwMatches = await argon.verify(user.password, password)
+            if(!pwMatches){
+                throw new NotFoundException("invalid email or password")
+            }
+            delete user.password
+            return user
+        } catch (error) {
+            if(error instanceof PrismaClientKnownRequestError){
+                if(error.code===""){
+                    throw new NotFoundException("invalid email or password")
+                }
+            }
+            console.info("authServiceError", error)
+            throw error
+        }
     }
 }
