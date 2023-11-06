@@ -3,11 +3,15 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto } from "./dto";
 import * as argon from "argon2"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService{
 
-    constructor(private prisma: PrismaService){}
+    constructor(
+        private prisma: PrismaService,
+        private jwt: JwtService,
+    ){}
     async login(dto: AuthDto){
         const hash = await argon.hash(dto.password)
         try {
@@ -52,12 +56,16 @@ export class AuthService{
             return user
         } catch (error) {
             if(error instanceof PrismaClientKnownRequestError){
-                if(error.code===""){
+                if(error.code==="P2001"){
                     throw new NotFoundException("invalid email or password")
                 }
             }
             console.info("authServiceError", error)
             throw error
         }
+    }
+
+    async signToken(userId: number, email: string){
+        
     }
 }
