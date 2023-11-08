@@ -2,10 +2,11 @@
 
 create FN Bookmarks API using Nest.js
 
-<img src=""/>
 
 ### what the API does
-* 
+* creates, fetches, edits and deletes bookmarks
+* a user can have many bookmarks; a bookmark can have only one user
+    * user can fetch, edit and delete only the bookmarks that s/he has created
 
 ### to do
 * CRUD REST API
@@ -19,4 +20,3 @@ create FN Bookmarks API using Nest.js
 * Prisma
 * Postgres
 * TypeScript
-* JavaScript
