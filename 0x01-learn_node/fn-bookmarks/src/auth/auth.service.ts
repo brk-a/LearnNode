@@ -26,7 +26,7 @@ export class AuthService{
                 },
             })
             // delete user.password // do not return passwd hash
-            return this.signToken(user.id, user.email)
+            return this.signToken(String(user.id), user.email)
         } catch (error) {
             if(error instanceof PrismaClientKnownRequestError){
                 if(error.code==='P2002'){
@@ -55,7 +55,7 @@ export class AuthService{
                 throw new NotFoundException("invalid email or password")
             }
             // delete user.password // do not return passwd hash
-            return this.signToken(user.id, user.email)
+            return this.signToken(String(user.id), user.email)
         } catch (error) {
             if(error instanceof PrismaClientKnownRequestError){
                 if(error.code==="P2001"){
@@ -67,7 +67,7 @@ export class AuthService{
         }
     }
 
-    async signToken(userId: number, email: string){
+    async signToken(userId: string, email: string){
         const secret = this.config.get("JWT_SECRET")
         const payload = {
             sub: userId,

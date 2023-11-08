@@ -68,6 +68,7 @@ describe("app e2e", () => {
                         password: dto.password,
                     })
                     .expectStatus(200)
+                    .stores("userAt", "access_token")
             })
         })
         describe("signup", () => {
@@ -110,11 +111,21 @@ describe("app e2e", () => {
                     .post("/auth/signup")
                     .withBody(dto)
                     .expectStatus(201)
+                    .stores("userAt", "access_token")
             })
         })
     })
     describe("user", () => {
-        describe("get user/me", () => { })
+        describe("get user/me", () => {
+            it("should get current user", () => {
+                return pactum.spec()
+                    .get(`/users/me`)
+                    .withHeaders({
+                        Authorization: 'Bearer $S{userAt}',
+                    })
+                    .expectStatus(200)
+            })
+        })
         describe("edit user", () => { })
     })
     describe("bookmark", () => {
